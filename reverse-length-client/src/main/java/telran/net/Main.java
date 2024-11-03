@@ -10,6 +10,7 @@ import telran.view.StandardInputOutput;
 
 public class Main {
     static EchoClient echoClient;
+    private static final HashSet<String> types = new HashSet<>(Arrays.asList("normal", "reverse", "length"));
 
     public static void main(String[] args) {
         Item[] items = {
@@ -41,8 +42,8 @@ public class Main {
     }
 
     static void stringProcessing(InputOutput io) {
-        HashSet<String> types = new HashSet<>(Arrays.asList("normal", "reverse", "length"));
-        String type = io.readStringOptions("Enter request type (normal, reverse, length)",
+        String typeOptions = String.join(", ", types);
+        String type = io.readStringOptions("Enter request type (" + typeOptions + ")",
                 "Invalid type, please choose again", types);
         String input = io.readString("Enter string for processing");
         String request = type + ":" + input;
