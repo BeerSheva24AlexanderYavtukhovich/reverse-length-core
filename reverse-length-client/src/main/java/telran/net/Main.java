@@ -1,5 +1,8 @@
 package telran.net;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import telran.view.InputOutput;
 import telran.view.Item;
 import telran.view.Menu;
@@ -24,15 +27,9 @@ public class Main {
             echoClient.close();
         }
         echoClient = new EchoClient(host, port);
+
         Menu menu = new Menu("Run Session",
-                Item.of("Send request", IO -> {
-                    Menu subMenu = new Menu("Enter request type",
-                            Item.of("Normal", iO -> stringProcessing(iO, "normal")),
-                            Item.of("Reverse", iO -> stringProcessing(iO, "reverse")),
-                            Item.of("Length", iO -> stringProcessing(iO, "length")),
-                            Item.ofExit());
-                    subMenu.perform(io);
-                }),
+                Item.of("Send request", Main::stringProcessing),
                 Item.ofExit());
         menu.perform(io);
     }
@@ -43,7 +40,10 @@ public class Main {
         }
     }
 
-    static void stringProcessing(InputOutput io, String type) {
+    static void stringProcessing(InputOutput io) {
+        HashSet<String> types = new HashSet<>(Arrays.asList("normal", "reverse", "length"));
+        String type = io.readStringOptions("Enter request type (normal, reverse, length)",
+                "Invalid type, please choose again", types);
         String input = io.readString("Enter string for processing");
         String request = type + ":" + input;
         String response = echoClient.sendAndReceive(request);
